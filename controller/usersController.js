@@ -1,46 +1,47 @@
 class UsersController {
-    constructor() {
-        this.createUser = this.createUser.bind(this);
-        this.getAllUser = this.getAllUser.bind(this);
-        this.createExercise = this.createExercise.bind(this);
-        this.getUserLogs = this.getUserLogs.bind(this);
-    }
-    
+    // Users list
     users = [];
+
+    // Log list by user
     logs = [];
 
+    constructor() {
+        this.create = this.create.bind(this);
+        this.getAll = this.getAll.bind(this);   
+        this.getLogsByUserId = this.getLogsByUserId.bind(this);
+    }
+    
     generateId() {
         return Math.random().toString(36).substring(2, 16);
     }
+
+    getUserIndexByUserId(userId) {
+        return usersController.users.findIndex(user => user._id === userId);
+    }
+
+    addExercise(userId, data) {
+        const user = this.getUserIndexByUserId(userId);
+        if(user === -1) {
+            throw new Error("User not found")
+        }
+        if (!this.users[userIndex].exercises) {
+            this.users[userIndex].exercises = [];
+        }
+        this.users[userIndex].exercises.push(data);
+    }
        
-    async createUser(req, res) {
+    async create(req, res) {
         const { username } = req.body;
         const newUser = { username, _id: this.generateId()};
         this.users.push(newUser);
         res.json(newUser);
     }
 
-    async getAllUser(req, res) {
+    async getAll(req, res) {
         res.json(this.users)
     }
 
-    async createExercise(req, res) {
-        const userId = req.params.id;
-        const { description, duration, date } = req.body;
-        const userIndex = this.users.findIndex(user => user._id === userId);
-        if (userIndex !== -1) {
-            const newExercise = { description, duration: parseInt(duration), date: date ? new Date(date).toDateString() : new Date().toDateString() };
-            if (!this.users[userIndex].exercises) {
-                this.users[userIndex].exercises = [];
-            }
-            this.users[userIndex].exercises.push(newExercise);
-            res.json({ username: this.users[userIndex].username, ...newExercise });
-        } else {
-            res.status(404).json({ message: "User not found" });
-        }
-    }
-
-    async getUserLogs(req, res) {
+    async getLogsByUserId(req, res) {
         const userId = req.params.id;
         const user = this.users.find(user => user._id === userId);
         if (user) {

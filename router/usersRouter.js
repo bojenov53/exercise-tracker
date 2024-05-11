@@ -8,10 +8,10 @@ const catchAsync = (fn) => (req, res, next) => {
 
 const router = Router();
 
-router.post('/users', catchAsync(usersController.createUser));
-router.get('/users', catchAsync(usersController.getAllUser));
+router.post('/users', catchAsync(usersController.create));
+router.get('/users', catchAsync(usersController.getAll));
 router.get('/users/:id/exercises', catchAsync(usersController.createExercise));
-router.get('/users/:id/logs', catchAsync(usersController.getUserLogs));
+router.get('/users/:id/logs', catchAsync(usersController.getLogsByUserId));
 
 
 export default router;
